@@ -25,17 +25,17 @@ if (current_url.slice(-4) !== "orig" && twitter_image_regex.test(current_url) ==
 
 
 // Discord
-let discord_regex_attachment = /^https:\/\/media\.discordapp\.net\/attachments\/\d*\/\d*\/\S*\.(?:jpg|png|gif)/;
-let discord_regex_avatar = /^https:\/\/cdn\.discordapp\.com\/(?:avatars\/\d*|guilds\/\d*\/users\/\d*\/avatars)\/\S*\.(?:webp|gif)/;
+let discord_attachment_regex = /^https:\/\/(?:media\.discordapp\.net|cdn\.discordapp\.com)\/attachments\/\d*\/\d*\/\S*\.(?:jpg|png|gif)\?\S*?(?:width|height)=/;
+let discord_avatar_regex = /^https:\/\/cdn\.discordapp\.com\/(?:avatars\/\d*|guilds\/\d*\/users\/\d*\/avatars)\/\S*\.(?:webp|gif)/;
 
-if (discord_regex_attachment.test(current_url) === true) {
-    let new_url = current_url.match(discord_regex_attachment)[0];
+if (discord_attachment_regex.test(current_url) === true) {
+    let new_url = current_url.match(discord_attachment_regex)[0];
     if (current_url.length > new_url.length) {
         window.location.assign(new_url);
     }
 }
-if (discord_regex_avatar.test(current_url) === true) {
-    let new_url = current_url.match(discord_regex_avatar)[0];
+if (discord_avatar_regex.test(current_url) === true) {
+    let new_url = current_url.match(discord_avatar_regex)[0];
     if (current_url.slice(new_url.length) !== "?size=4096") {
         window.location.assign(new_url + "?size=4096");
     }
@@ -43,10 +43,10 @@ if (discord_regex_avatar.test(current_url) === true) {
 
 
 // Twitch
-let twitch_regex_avatar = /^https:\/\/static-cdn\.jtvnw\.net\/jtv_user_pictures\/[a-z0-9-]*-profile_image(?:-[a-z0-9]{16}|)-/;
+let twitch_avatar_regex = /^https:\/\/static-cdn\.jtvnw\.net\/jtv_user_pictures\/[a-z0-9-]*-profile_image(?:-[a-z0-9]{16}|)-/;
 
-if (twitch_regex_avatar.test(current_url) === true) {
-    let new_url = current_url.match(twitch_regex_avatar)[0];
+if (twitch_avatar_regex.test(current_url) === true) {
+    let new_url = current_url.match(twitch_avatar_regex)[0];
     let image_ext = "." + current_url.split(".").slice(-1)[0];
     if (current_url.slice(new_url.length, current_url.length - image_ext.length) !== "600x600") {
         window.location.assign(new_url + "600x600" + image_ext);
