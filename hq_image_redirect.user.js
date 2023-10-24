@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           HQ image redirect
 // @description    Redirects image url to its highest quality
-// @version        0.1.0
+// @version        0.1.1
 // @match          https://pbs.twimg.com/media/*
 // @match          https://media.discordapp.net/attachments/*
 // @match          https://cdn.discordapp.com/avatars/*
