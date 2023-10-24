@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           HQ image redirect
 // @description    Redirects image url to its highest quality
-// @version        0.1.2
+// @version        0.2.0
 // @match          https://pbs.twimg.com/media/*
 // @match          https://media.discordapp.net/attachments/*
 // @match          https://cdn.discordapp.com/attachments/*
@@ -11,45 +11,51 @@
 // @run-at         document-start
 // ==/UserScript==
 
+let current_url = window.location.href;
+let match_result = null;
+
 
 // Twitter
-let current_url = window.location.href;
-let twitter_image_regex = /^https:\/\/pbs\.twimg\.com\/media\/[A-Za-z0-9_-]{15}(?:\.|\?format=)(?:jpg|png)/;
+if (current_url.startsWith("https://pbs.twimg.com/media/")) {
+    let twitter_image_regex = /^https:\/\/pbs\.twimg\.com\/media\/[A-Za-z0-9_-]{15}(?:\.|\?format=)(?:jpg|png)/;
 
-if (current_url.slice(-4) !== "orig" && twitter_image_regex.test(current_url) === true) {
-    if (current_url[43] === "?") {
-        window.location.assign(current_url.match(twitter_image_regex)[0] + "&name=orig");
-    } else {
-        window.location.assign(current_url.match(twitter_image_regex)[0] + ":orig");
+    match_result = current_url.match(twitter_image_regex);
+    if (match_result !== null && current_url.slice(-4) !== "orig") {
+        if (current_url[43] === "?") {
+            window.location.assign(match_result[0] + "&name=orig");
+        } else {
+            window.location.assign(match_result[0] + ":orig");
+        }
     }
 }
 
 
 // Discord
-let discord_attachment_regex = /^https:\/\/(?:media\.discordapp\.net|cdn\.discordapp\.com)\/attachments\/\d*\/\d*\/\S*\.(?:jpg|png|gif)\?\S*?(?:width|height)=/;
-let discord_avatar_regex = /^https:\/\/cdn\.discordapp\.com\/(?:avatars\/\d*|guilds\/\d*\/users\/\d*\/avatars)\/\S*\.(?:webp|gif)/;
+if (current_url.startsWith("https://media.discordapp.net/") || current_url.startsWith("https://cdn.discordapp.com/")) {
+    let discord_attachment_regex = /^(https:\/\/(?:media\.discordapp\.net|cdn\.discordapp\.com)\/attachments\/\d*\/\d*\/\S*\.(?:jpg|png|gif))\?\S*?(?:width|height)=/;
+    let discord_avatar_regex = /^https:\/\/cdn\.discordapp\.com\/(?:avatars\/\d*|guilds\/\d*\/users\/\d*\/avatars)\/\S*\.(?:webp|gif)/;
 
-if (discord_attachment_regex.test(current_url) === true) {
-    let new_url = current_url.match(discord_attachment_regex)[0];
-    if (current_url.length > new_url.length) {
-        window.location.assign(new_url);
+    match_result = current_url.match(discord_attachment_regex);
+    if (match_result !== null) {
+        window.location.assign(match_result[1]);
     }
-}
-if (discord_avatar_regex.test(current_url) === true) {
-    let new_url = current_url.match(discord_avatar_regex)[0];
-    if (current_url.slice(new_url.length) !== "?size=4096") {
-        window.location.assign(new_url + "?size=4096");
+
+    match_result = current_url.match(discord_avatar_regex);
+    if (match_result !== null && current_url.slice(-10) !== "?size=4096") {
+        window.location.assign(match_result[0] + "?size=4096");
     }
 }
 
 
 // Twitch
-let twitch_avatar_regex = /^https:\/\/static-cdn\.jtvnw\.net\/jtv_user_pictures\/[a-z0-9-]*-profile_image(?:-[a-z0-9]{16}|)-/;
+if (current_url.startsWith("https://static-cdn.jtvnw.net/jtv_user_pictures/")) {
+    let twitch_avatar_regex = /^https:\/\/static-cdn\.jtvnw\.net\/jtv_user_pictures\/[a-z0-9-]*-profile_image(?:-[a-z0-9]{16}|)-/;
 
-if (twitch_avatar_regex.test(current_url) === true) {
-    let new_url = current_url.match(twitch_avatar_regex)[0];
-    let image_ext = "." + current_url.split(".").slice(-1)[0];
-    if (current_url.slice(new_url.length, current_url.length - image_ext.length) !== "600x600") {
-        window.location.assign(new_url + "600x600" + image_ext);
+    match_result = current_url.match(twitch_avatar_regex);
+    if (match_result !== null) {
+        let image_ext = "." + current_url.split(".").slice(-1)[0];
+        if (current_url.slice(match_result[0].length, current_url.length - image_ext.length) !== "600x600") {
+            window.location.assign(match_result[0] + "600x600" + image_ext);
+        }
     }
 }
