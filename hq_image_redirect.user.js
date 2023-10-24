@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name           HQ image redirect
 // @description    Redirects image url to its highest quality
-// @version        0.1.1
+// @version        0.1.2
 // @match          https://pbs.twimg.com/media/*
 // @match          https://media.discordapp.net/attachments/*
+// @match          https://cdn.discordapp.com/attachments/*
 // @match          https://cdn.discordapp.com/avatars/*
 // @match          https://cdn.discordapp.com/guilds/*/users/*/avatars/*
 // @match          https://static-cdn.jtvnw.net/jtv_user_pictures/*
