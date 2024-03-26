@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           HQ image redirect
 // @description    Redirects image url to its highest quality
-// @version        0.2.0
+// @version        0.2.1
 // @match          https://pbs.twimg.com/media/*
 // @match          https://media.discordapp.net/attachments/*
 // @match          https://cdn.discordapp.com/attachments/*
@@ -32,12 +32,12 @@ if (current_url.startsWith("https://pbs.twimg.com/media/")) {
 
 // Discord
 if (current_url.startsWith("https://media.discordapp.net/") || current_url.startsWith("https://cdn.discordapp.com/")) {
-    let discord_attachment_regex = /^(https:\/\/(?:media\.discordapp\.net|cdn\.discordapp\.com)\/attachments\/\d*\/\d*\/\S*\.(?:jpg|png|gif))\?\S*?(?:width|height)=/;
+    let discord_attachment_regex = /^https:\/\/(?:media\.discordapp\.net|cdn\.discordapp\.com)\/attachments\/\d+\/\d+\/\S+\.(?:jpg|png|gif)\?ex=\S+&is=\S+&hm=\S{64}&/;
     let discord_avatar_regex = /^https:\/\/cdn\.discordapp\.com\/(?:avatars\/\d*|guilds\/\d*\/users\/\d*\/avatars)\/\S*\.(?:webp|gif)/;
 
     match_result = current_url.match(discord_attachment_regex);
-    if (match_result !== null) {
-        window.location.assign(match_result[1]);
+    if (match_result !== null && current_url !== match_result[0]) {
+        window.location.assign(match_result[0]);
     }
 
     match_result = current_url.match(discord_avatar_regex);
